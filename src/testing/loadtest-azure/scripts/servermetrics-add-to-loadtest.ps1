@@ -4,6 +4,9 @@ param
   [Parameter(Mandatory = $true)]
   [string] $loadTestId,
 
+  # Load Test Run Id (optional - not implemented yet)
+  [string] $loadTestRunId,
+
   # Appcomponent Azure ResourceId
   [Parameter(Mandatory = $true)]
   [string] $resourceId,
@@ -41,20 +44,22 @@ if (!(validateResourceId -resourceId $resourceId)) {
   throw "No valid resourceId provided."
 }
 
-function AppComponent {
+function ServerMetricsConfig {
     param
     (
       [string] $resourceName,
       [string] $resourceId,
       [string] $resourceType,
-      [string] $loadTestId
+      [string] $loadTestId,
+      [string] $loadTestRunId
     )
   
     $result = @"
     {
         "testId": "$loadTestId",
-        "value": {
+        "metrics": {
             "$resourceId": {
+              "displayName": "null",
               "kind": "null",
               "resourceName": "$resourceName",
               "resourceId": "$resourceId",
@@ -72,26 +77,10 @@ $resource = $resourceId.split("/")
 $resourceType = $resource[6]+"/"+$resource[7]
 
 $testDataFileName = $loadTestId + ".txt"
-AppComponent -resourceName $resource[8] `
+ServerMetricsConfig -resourceName $resource[8] `
             -resourceType $resourceType `
             -resourceId $resourceId `
             -loadTestId $loadTestId | Out-File $testDataFileName -Encoding utf8
 
-$urlRoot = "https://" + $apiEndpoint + "/appcomponents/" + $loadTestId
+$urlRoot = "https://" + $apiEndpoint + "/serverMetricsConfig/" + $loadTestId
 Write-Verbose "*** Load test service data plane: $urlRoot"
-
-# Execute API call - add AppComponents to an existing Load Test
-az rest --url $urlRoot `
-  --method PATCH `
-  --skip-authorization-header `
-  --headers ('@' + $accessTokenFileName) "Content-Type=application/merge-patch+json" `
-  --url-parameters testId=$loadTestId api-version=$apiVersion `
-  --body ('@' + $testDataFileName) `
-  $verbose #-o none 
-
-$defaultMetrics = (. ./servermetrics-get-defaults.ps1 -apiEndpoint $apiEndpoint -apiVersion $apiVersion -embedded $true).defaultMetrics # retrieve all available metrics
-$metrics = $defaultMetrics."$resourceType" # retrieve applicable metrics
-
-# Delete the access token and test data files
-Remove-Item $accessTokenFileName
-Remove-Item $testDataFileName

@@ -60,7 +60,7 @@ variables:
 - name: 'azureLoadTestVUsers'
   value: '10'
 - name: 'azureLoadTestDurationSeconds'
-  value: '300'
+  value: '600'
 - name: 'azureLoadTestUserThreads'
   value: '100'
 

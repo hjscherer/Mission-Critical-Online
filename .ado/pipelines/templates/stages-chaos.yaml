@@ -12,7 +12,7 @@ parameters:
     default: 0
   - name: loadTestStartSeconds
     type: number
-    default: 300
+    default: 10
   - name: podFailure
     type: boolean
     default: false

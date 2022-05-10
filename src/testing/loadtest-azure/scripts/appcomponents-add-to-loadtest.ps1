@@ -89,7 +89,7 @@ az rest --url $urlRoot `
   --body ('@' + $testDataFileName) `
   $verbose #-o none 
 
-$defaultMetrics = (. ./servermetrics-get-defaults.ps1 -apiEndpoint $apiEndpoint -apiVersion $apiVersion -embedded $true).defaultMetrics # retrieve all available metrics
+$defaultMetrics = (. $PSScriptRoot/servermetrics-get-defaults.ps1 -apiEndpoint $apiEndpoint -apiVersion $apiVersion -embedded $true).defaultMetrics # retrieve all available metrics
 $metrics = $defaultMetrics."$resourceType" # retrieve applicable metrics
 
 # Delete the access token and test data files

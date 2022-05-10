@@ -62,7 +62,7 @@ variables:
 - name: 'azureLoadTestDurationSeconds'
   value: '660'
 - name: 'azureLoadTestUserThreads'
-  value: '100'
+  value: '50'
 
 # Others
 - name: 'smokeTestRetryCount' # How many times a request in the smoke tests is retried before declared as failed (retries HTTP response codes from 400-599 as well as issues like certificate errors)

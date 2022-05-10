@@ -67,7 +67,7 @@ resource "azurerm_frontdoor" "main" {
     protocol            = "Https"
     probe_method        = "HEAD"
     path                = "/health/stamp"
-    interval_in_seconds = 30
+    interval_in_seconds = 10
   }
 
   backend_pool_health_probe {

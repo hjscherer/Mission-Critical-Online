@@ -10,7 +10,7 @@ pool:
 parameters:
 
 - name: runChaosTesting
-  displayName: "Run Chaos testing"
+  displayName: "Run chaos testing"
   type: boolean
   default: false
 

@@ -332,11 +332,11 @@ stages:
 
             - template: steps-buildagent-prerequisites.yaml # Install tools like kubectl
 
-            - template: steps-parse-terraform-output.yaml # parse global configuration settings from terraform deployment output
-              parameters:
-                workingDirectory: '$(Pipeline.Workspace)/terraformOutputGlobalInfra'  # Global infra deploy output directory
+            - ${{ if ne(parameters.environment, 'e2e') }}: # The next two steps are only valid in int/prod
+              - template: steps-parse-terraform-output.yaml # parse global configuration settings from terraform deployment output
+                parameters:
+                  workingDirectory: '$(Pipeline.Workspace)/terraformOutputGlobalInfra'  # Global infra deploy output directory
 
-            - ${{ if ne(parameters.environment, 'e2e') }}: # Only in int/prod
               - task: AzureCLI@2
                 displayName: 'Fetch previous release prefix through disabled Front Door backends'
                 retryCountOnTaskFailure: 1
